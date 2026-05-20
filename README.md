@@ -31,17 +31,7 @@ The Objective of Task 1:
 **URL:**  
 `http://localhost:8080/greeting?name=Vistula`
 
-### 4. Gitignore
-/target/
-*.iml
-.idea/
-*.log
-*.class
-*.jar
-*.war
-*.zip
-*.db
-*.DS_Store
+
 
 # Task 2 Backend RestAPI Application with Swagger UI
 
