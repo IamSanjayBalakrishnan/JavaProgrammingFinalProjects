@@ -2,7 +2,7 @@ Task 2
 
 # FirstRestAPI 
    
-This project is a  REST API catalogue built with Spring Boot which allows users to create, read, update, and delete products (CRUD) through HTTP endpoints, using an H2 in-memory database for storage via Spring Data JPA. It follows a layered architecture (Steriotypes): Controller, Service, Repository, and Mapper. It also includes Swagger UI for interactive API documentation.
+This project is a  REST API catalogue built with Spring Boot, which allows users to create, read, update, and delete products (CRUD) through HTTP endpoints, using an H2 in-memory database for storage via Spring Data JPA. It follows a layered architecture (Steriotypes): Controller, Service, Repository, and Mapper. It also includes Swagger UI for interactive API documentation.
 
 Base URL: http://localhost:8080/api/v1/products,
 Interactive Swagger Interface: http://localhost:8080/swagger-ui/index.html
@@ -18,45 +18,84 @@ Interactive Swagger Interface: http://localhost:8080/swagger-ui/index.html
 - Maven
 
 
-## Key Concepts Used
- 
-- @RestController` – marks the class as a REST controller
-- @RequestMapping` – sets the base URL for the controller
-- @PostMapping` / `@GetMapping` / `@PutMapping` / `@DeleteMapping` – maps HTTP methods to handler methods
-- @RequestBody` – deserializes JSON from the HTTP request body into a Java object
-- @PathVariable` – binds a URL path segment to a method parameter
-- @Service` – marks the business logic layer
-- @Repository` – marks the data access layer
-- @Component` – generic Spring-managed component (used in `ProductMapper`)
-- @ControllerAdvice` – global exception handler
-- @ExceptionHandler` – handles specific exception types
-- @Id` / `@GeneratedValue` – marks and auto-generates the primary key
-- JpaRepository` – Spring Data interface providing built-in CRUD methods (save, findById, findAll, deleteById)
-- ResponseEntity` – wraps the response with an HTTP status code
+## Step-by-Step Implementation
+Step 1 — Project Creation in IntelliJ IDEA
 
-## Properties of the Classes
-- FirstRestApiSpringApplication.java — Starts the Spring Boot application and sets the Swagger UI title.
-- Product.java — Represents the database table with id and name fields.
-- ProductRequest.java — Holds the incoming JSON data (name) when creating a product.
-- UpdateProductRequest.java — Same as ProductRequest but with an extra id field for updates.
-- ProductResponse.java — Holds the data (id and name) sent back to the client.
-- ProductController.java — Receives all HTTP requests (POST, GET, PUT, DELETE) and returns responses.
-- ProductRepository.java — Handles all database operations by extending JpaRepository.
-- ProductService.java — Contains the business logic between the controller and the repository.
-- ProductMapper.java — Converts objects between Request, Response, and Product types.
-- ProductExceptionSupplier.java — Creates the ProductNotFoundException in a lazy way using a Supplier lambda.
-- ProductNotFoundException.java — Custom exception thrown when a product ID is not found in the database.
-- ProductExceptionAdvisor.java — Catches ProductNotFoundException globally and returns a clean 404 instead of 500.
-- ErrorMessageResponse.java — Wraps the error message string into a JSON response like {"message": "..."}.
-- application.properties — Configures the H2 database, console path, and Hibernate SQL logging.
+Navigate to File → New → Project → Spring Initializr.
+Configure the project metadata (Group, Artifact, Name, etc.).
+Add the following dependencies:
+Spring Web
+Spring Data JPA
+H2 Database
+Spring Boot DevTools
+
+ open the project in IntelliJ.
+
+Step 2 — Domain Model (Product Class)
+This class represents the core entity of the application.
+
+Contains fields: id and name
+Includes a constructor that takes the product name
+Provides getter and setter methods
+
+The Product object is used throughout the application for data storage and response handling.
+Step 3 — Repository Layer (ProductRepository)
+The repository is responsible for data persistence (currently using in-memory storage).
+
+Annotated with @Repository
+Uses a HashMap<Long, Product> to simulate a database
+Maintains a counter for generating unique IDs
+Implements a save() method that assigns an ID and stores the entity
+
+This serves as a temporary database solution before integrating.
+
+Step 4 — Data Transfer Objects (DTOs)
+ProductRequest
+Used to receive data from the client in JSON format.
+
+Contains only the name field
+Uses @JsonCreator for proper JSON deserialization
+
+ProductResponse
+Used to send data back to the client.
+
+Contains id and name fields
+
+These DTOs help separate the internal domain model from the external API contract.
+
+Step 5 — Mapper (ProductMapper)
+The mapper handles object conversions between layers.
+
+Converts ProductRequest → Product
+Converts Product → ProductResponse
+Annotated with @Component
+
+This class ensures clean separation of concerns and keeps the service layer simple.
+
+Step 6 — Service Layer (ProductService)
+This layer contains the business logic of the application.
+Main responsibilities:
+
+Receive ProductRequest from the controller
+Map it to a Product entity
+Save the entity through the repository
+Convert the saved entity back to ProductResponse
+Return the response
+
+Annotated with @Service.
+Step 7 — Controller Layer (ProductController)
+The controller handles HTTP requests and responses.
+
+Annotated with @RestController
+Uses constructor injection for ProductService
+Exposes a POST endpoint at /api/v1/products
 
 ## How to Run
  
-1. Clone the repository
-2. Open the project in IntelliJ IDEA
-3. Right-click the project → Maven → Reload Project
-4. Run FirstRestApiSpringApplication.java
-5. Use the URLs. (Given on the Begining of the file)
+1. Open the project in IntelliJ IDEA
+2. Right-click the project → Maven → Reload Project
+3. Run FirstRestApiSpringApplication.java
+4. Use the URLs. (Given on the Begining of the file)
 
 
  ---
